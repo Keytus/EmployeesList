@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Lab2</string>
+    <string name="list_button">View list</string>
+    <string name="add_button">Add employee</string>
+    <string name="back_button">Back</string>
+    <string name="info_string">Info</string>
+    <string name="delete_string">Delete</string>
+    <string name="info_header">Info about employee:</string>
+    <string name="refactor_string">Refactor</string>
+    <string name="add_header_string">Print data</string>
+    <string name="add_fullName_string">Full name:</string>
+    <string name="add_departmentNumber_string">Department number:</string>
+    <string name="add_post_string">Post:</string>
+    <string name="add_first_date_string">First date:</string>
+</resources>

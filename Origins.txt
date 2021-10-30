@@ -1,0 +1,4 @@
+https://metanit.com/java/android/5.1.php
+https://startandroid.ru/ru/uroki/vse-uroki-spiskom/113-urok-54-kastomizatsija-spiska-sozdaem-svoj-adapter.html
+http://developer.alexanderklimov.ru/android/dialogfragment_alertdialog.php
+http://developer.alexanderklimov.ru/android/popupmenu.php
