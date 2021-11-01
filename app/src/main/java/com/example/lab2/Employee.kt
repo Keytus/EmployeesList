@@ -8,10 +8,16 @@ class Employee(var fullName: String, var departmentNumber: Number, var post: Str
 {
     override fun toString(): String
     {
-        return fullName
+        //return fullName
+        var infoString = "Full name:" + fullName + "\n"
+        infoString+= "Department number:" + departmentNumber.toString()+ "\n"
+        infoString+= "First date:"+ firstDate.getDate().toString() + "." + (firstDate.month+1).toString() + "." + (firstDate.year + 1900).toString()
+        return infoString
+
+
     }
     fun toFile(): String {
-        var fileString:String = fullName + "\n" + departmentNumber.toString() + "\n"+ post + "\n" + firstDate.year + "\n" + firstDate.month + "\n" + firstDate.day + "\n"
+        var fileString:String = fullName + "\n" + departmentNumber.toString() + "\n"+ post + "\n" + firstDate.toString() + "\n"
         return fileString
     }
 }

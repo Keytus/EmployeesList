@@ -3,21 +3,17 @@ package com.example.lab2
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
-import android.view.*
-import android.widget.BaseAdapter
-import android.widget.TextView
-import java.util.*
-import kotlin.collections.ArrayList
-import android.widget.Toast
-import androidx.appcompat.widget.PopupMenu
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
+import android.view.Gravity
 import android.view.LayoutInflater
-import android.content.DialogInterface
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
 import android.widget.EditText
-import com.example.lab2.Employee
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import android.widget.ListView
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.PopupMenu
+import java.util.*
 
 
 class ListAdapter(var context: Context, var objects: ArrayList<Employee>) : BaseAdapter()
@@ -43,7 +39,6 @@ class ListAdapter(var context: Context, var objects: ArrayList<Employee>) : Base
 
     @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-
         var view: View? = convertView
         if (view == null) {
             view = lInflater?.inflate(R.layout.simple_list_item_1, parent, false)
@@ -61,10 +56,19 @@ class ListAdapter(var context: Context, var objects: ArrayList<Employee>) : Base
                 }
                 R.id.delete -> {
                     deleteEmployee(employee)
+                    notifyDataSetChanged()
                     true
                 }
                 R.id.refactor -> {
                     CreateRefactorMessage(position)
+                    true
+                }
+                R.id.add ->{
+                    CreateAddMessage()
+                    true
+                }
+                R.id.department ->{
+                    CreateSortedListMessage(position)
                     true
                 }
                 else -> false
@@ -72,7 +76,7 @@ class ListAdapter(var context: Context, var objects: ArrayList<Employee>) : Base
         }
 
         val text = view.findViewById(R.id.label) as TextView
-        text.setText(employee.fullName)
+        text.setText(employee.toString())
 
         text.setOnLongClickListener {
             popupMenu.show()
@@ -94,7 +98,7 @@ class ListAdapter(var context: Context, var objects: ArrayList<Employee>) : Base
         val textView = TextView(context)
 
         with(textView) {
-            textView.text = "Info about employee:"
+            textView.text = context.getString(R.string.add_header_string)
             textView.textSize = 18.0F
             textView.setTypeface(null, Typeface.BOLD)
             textView.gravity = Gravity.CENTER
@@ -103,7 +107,8 @@ class ListAdapter(var context: Context, var objects: ArrayList<Employee>) : Base
         var infoString = "Full name:" + employee.fullName + "\n"
         infoString+= "Department number:" + employee.departmentNumber.toString() + "\n"
         infoString+= "Post:" + employee.post + "\n"
-        infoString+= "First date:"+ employee.firstDate.day.toString() + "." + (employee.firstDate.month+1).toString() + "." + (employee.firstDate.year + 1900).toString()
+        infoString+= "First date:"+ employee.firstDate.getDate().toString() + "." + (employee.firstDate.month+1).toString() + "." + (employee.firstDate.year + 1900).toString()
+
 
         val builder = AlertDialog.Builder(context)
         builder
@@ -131,6 +136,7 @@ class ListAdapter(var context: Context, var objects: ArrayList<Employee>) : Base
         builder.setView(view)
         builder.setPositiveButton("Ok") { dialog, id ->
             RefactorEmployee(view, position)
+            notifyDataSetChanged()
             dialog.cancel()
         }
         builder.create()
@@ -149,5 +155,55 @@ class ListAdapter(var context: Context, var objects: ArrayList<Employee>) : Base
         objects[position].departmentNumber = departmentNumber
         objects[position].post = post
         objects[position].firstDate = firstDate
+    }
+
+    fun CreateAddMessage()
+    {
+        val builder = AlertDialog.Builder(context)
+        val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view: View = inflater.inflate(R.layout.add_layout, null)
+        builder.setView(view)
+        builder.setPositiveButton("OK"
+        ) { dialog, id ->
+            CreateEmployee(view)
+            notifyDataSetChanged()
+            dialog.cancel()
+        }
+        builder.create()
+        builder.show()
+    }
+
+    fun CreateEmployee(view: View)
+    {
+        val fullName: String = (view.findViewById(R.id.editTextFullName) as EditText).text.toString()
+        val departmentNumber: Int = (view.findViewById(R.id.editTextDepartmentNumber) as EditText).text.toString().toInt()
+        val post: String = (view.findViewById(R.id.editTextPost) as EditText).text.toString()
+        val day: Int = (view.findViewById(R.id.editTextFirstDateDay) as EditText).text.toString().toInt()
+        val month: Int = (view.findViewById(R.id.editTextFirstDateMonth) as EditText).text.toString().toInt()
+        val year: Int = (view.findViewById(R.id.editTextFirstDateYear) as EditText).text.toString().toInt()
+
+        val firstDate = Date((year-1900),(month-1),day)
+
+        objects.add(Employee(fullName, departmentNumber, post, firstDate))
+    }
+    fun CreateSortedListMessage(position: Int)
+    {
+        val builder = AlertDialog.Builder(context)
+        val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view: View = inflater.inflate(R.layout.sorted_list_layout, null)
+
+        val needEmployees = (objects.filter { it.departmentNumber == objects[position].departmentNumber }) as ArrayList<Employee>
+        needEmployees.sortWith(compareBy { it.firstDate })
+        val listAdapter = SortedListAdapter(context, needEmployees)
+        val employeesList: ListView = view.findViewById(R.id.sortedEmployeesList)
+        employeesList.setAdapter(listAdapter as android.widget.ListAdapter?)
+
+        builder.setView(view)
+        builder.setPositiveButton("OK"
+        ) { dialog, id ->
+            dialog.cancel()
+        }
+        builder.create()
+        builder.show()
     }
 }

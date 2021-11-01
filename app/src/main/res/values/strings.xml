@@ -5,6 +5,8 @@
     <string name="back_button">Back</string>
     <string name="info_string">Info</string>
     <string name="delete_string">Delete</string>
+    <string name="add_string">Add</string>
+    <string name="department_string">Department</string>
     <string name="info_header">Info about employee:</string>
     <string name="refactor_string">Refactor</string>
     <string name="add_header_string">Print data</string>
